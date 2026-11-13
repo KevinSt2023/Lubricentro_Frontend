@@ -1,0 +1,117 @@
+@use '@angular/material' as mat;
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+// ===========================================================================
+// Tema de Angular Material, enganchado a las variables de sistema --mat-sys-*.
+// La marca la fija la paleta de tokens de abajo; aqui solo se cablea Material.
+// ===========================================================================
+html {
+  color-scheme: light dark;
+  @include mat.theme(
+    (
+      color: (
+        primary: mat.$red-palette,
+        tertiary: mat.$blue-palette,
+      ),
+      typography: (
+        plain-family: 'Inter, Roboto, system-ui, sans-serif',
+        brand-family: 'Inter, Roboto, system-ui, sans-serif',
+      ),
+      density: 0,
+    )
+  );
+
+  // El rojo de LubriTech manda sobre el primario de Material.
+  --mat-sys-primary: var(--lt-rojo);
+  --mat-sys-on-primary: #ffffff;
+}
+
+// ===========================================================================
+// Paleta de marca LubriTech (tomada del logo).
+//   grafito  negro grafito del fondo
+//   acero    gris acero de las superficies y bordes
+//   plata    gris claro / texto sobre oscuro
+//   rojo     acento de marca (el "Tech")
+// Modo claro por defecto; el oscuro redefine los mismos tokens.
+// ===========================================================================
+:root {
+  --lt-rojo: #e01e26;
+  --lt-rojo-700: #b3141b;
+  --lt-rojo-soft: rgba(224, 30, 38, 0.1);
+
+  --lt-grafito: #14161a;
+  --lt-grafito-900: #0f1115;
+  --lt-grafito-800: #1b1e24;
+  --lt-grafito-700: #24282f;
+
+  --lt-acero: #363c45;
+  --lt-acero-600: #434a54;
+  --lt-acero-500: #566070;
+  --lt-acero-400: #8a94a2;
+
+  --lt-plata: #c7ccd3;
+  --lt-plata-300: #dde0e4;
+  --lt-plata-200: #eceef1;
+  --lt-plata-100: #f6f7f9;
+
+  // Superficies semanticas — MODO CLARO.
+  --lt-fondo: #f4f5f7;
+  --lt-superficie: #ffffff;
+  --lt-superficie-2: #f6f7f9;
+  --lt-borde: #e2e5e9;
+  --lt-texto: #1b1e24;
+  --lt-texto-tenue: #5b636f;
+}
+
+// MODO OSCURO.
+:root[data-theme='dark'] {
+  color-scheme: dark;
+
+  --lt-fondo: #0f1115;
+  --lt-superficie: #171a20;
+  --lt-superficie-2: #1d212a;
+  --lt-borde: #2a2f38;
+  --lt-texto: #e7e9ec;
+  --lt-texto-tenue: #9aa3af;
+
+  --mat-sys-primary: var(--lt-rojo);
+}
+
+// ===========================================================================
+// Base
+// ===========================================================================
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  font-family: 'Inter', 'Roboto', system-ui, sans-serif;
+  background: var(--lt-fondo);
+  color: var(--lt-texto);
+  -webkit-font-smoothing: antialiased;
+}
+
+// Scrollbar discreta, acorde a la marca.
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--lt-acero-400);
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--lt-acero-500);
+  background-clip: content-box;
+}
