@@ -59,6 +59,7 @@ export class Inicio {
   // Accesos del personal del taller (gated por permiso de empresa).
   private readonly taller: Acceso[] = [
     { ruta: '/ordenes', texto: 'Órdenes', icono: 'build', desc: 'Trabajos del taller', visible: () => this.sesion.puedeAlguno('ORDENES.VER', 'ORDENES.VER_ASIGNADAS') },
+    { ruta: '/agenda', texto: 'Agenda', icono: 'calendar_month', desc: 'Citas del taller', visible: () => this.sesion.puede('AGENDA.VER') },
     { ruta: '/clientes', texto: 'Clientes', icono: 'people', desc: 'Dueños y flotas', visible: () => this.sesion.puede('CLIENTES.VER') },
     { ruta: '/vehiculos', texto: 'Vehículos', icono: 'directions_car', desc: 'Placas y mantenimiento', visible: () => this.sesion.puede('VEHICULOS.VER') },
     { ruta: '/almacen', texto: 'Almacén', icono: 'inventory_2', desc: 'Stock y kardex', visible: () => this.sesion.puede('ALMACEN.VER') },

@@ -159,6 +159,8 @@ export interface Vehiculo {
   tipo: string;
   color?: string;
   kilometraje: number;
+  proximoMantFecha?: string;
+  proximoMantKm?: number;
   activo: boolean;
 }
 export interface VehiculoDetalle extends Vehiculo {

@@ -107,6 +107,15 @@ h1, h2, h3 { letter-spacing: -0.015em; }
 // Números alineados (tablas, precios, KPIs): ancho fijo por dígito.
 .tabular, table td, table th { font-variant-numeric: tabular-nums; }
 
+// Densidad pareja de las tablas de listado, en un solo lugar. El selector
+// con la clase .w-full gana a las utilidades verticales de Tailwind (py-*)
+// por especificidad, así que el alto de fila es uniforme en toda la app sin
+// tocar cada tabla. Solo toca el eje vertical; el px-* horizontal se respeta.
+table.w-full td { padding-top: .6rem; padding-bottom: .6rem; }
+table.w-full thead th { padding-top: .65rem; padding-bottom: .65rem; }
+// Cabecera un poco más nítida y legible.
+table.w-full thead th { letter-spacing: .04em; }
+
 // ===========================================================================
 // Inputs de marca (sin Angular Material): caja limpia, label arriba, foco rojo.
 // Se usan en los formularios/diálogos. Estado de error con [class.lt-mal].

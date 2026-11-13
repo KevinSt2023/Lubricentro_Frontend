@@ -141,7 +141,8 @@ export interface AccionData {
   `,
   styles: [`
     .lt-contenedor { container-type: inline-size; container-name: lt-dialog; }
-    .lt-grid { display: grid; grid-template-columns: 1fr; column-gap: 1rem; row-gap: 0.75rem; }
+    /* align-items:start -> un campo con hint no descuadra verticalmente a su par. */
+    .lt-grid { display: grid; grid-template-columns: 1fr; column-gap: 1rem; row-gap: 0.85rem; align-items: start; }
     .lt-full { grid-column: 1 / -1; }
     @container lt-dialog (min-width: 440px) {
       .lt-grid { grid-template-columns: 1fr 1fr; }

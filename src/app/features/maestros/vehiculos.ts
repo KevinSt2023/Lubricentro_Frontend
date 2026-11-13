@@ -134,12 +134,16 @@ export class Vehiculos {
       { clave: 'anio', label: 'Año', tipo: 'select', valor: v?.anio ?? '', opciones: aniosVehiculo().map((a) => ({ valor: a, texto: String(a) })) },
       { clave: 'color', label: 'Color', tipo: 'combo', valor: v?.color ?? '', opciones: COLORES_VEHICULO.map((c) => ({ valor: c, texto: c })) },
       { clave: 'kilometraje', label: 'Kilometraje', tipo: 'numero', valor: v?.kilometraje ?? 0, min: 0, hint: 'En kilómetros', grupo: 'Estado' },
+      { clave: 'proximoMantFecha', label: 'Próximo mantenimiento', tipo: 'fecha', valor: v?.proximoMantFecha ?? '', grupo: 'Mantenimiento programado', hint: 'Cuándo toca (opcional)' },
+      { clave: 'proximoMantKm', label: 'A los (km)', tipo: 'numero', valor: v?.proximoMantKm ?? '', min: 0, hint: 'Kilometraje objetivo (opcional)' },
     ];
     this.dialog.open(AccionDialog, { width: '560px', maxWidth: '95vw',
       data: { titulo: v ? 'Editar vehículo' : 'Nuevo vehículo', icono: 'directions_car', confirmar: 'Guardar', campos } })
       .afterClosed().subscribe((val) => {
         if (!val) return;
-        const obs = v ? this.api.editarVehiculo(v.id, val) : this.api.crearVehiculo(val);
+        // Vacíos a undefined: una fecha '' rompería el enlace a DateOnly.
+        const body = { ...val, proximoMantFecha: val.proximoMantFecha || undefined, proximoMantKm: val.proximoMantKm || undefined };
+        const obs = v ? this.api.editarVehiculo(v.id, body) : this.api.crearVehiculo(body);
         obs.subscribe({ next: () => this.ok('Vehículo guardado.'), error: (e) => this.err(e) });
       });
   }

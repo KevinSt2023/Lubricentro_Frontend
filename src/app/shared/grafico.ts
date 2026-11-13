@@ -80,7 +80,7 @@ export class Grafico implements AfterViewInit, OnDestroy {
 
     return {
       color: [rojo, acero, plata, '#2d7d46', '#c9962a', '#2f6fb0'],
-      textStyle: { color: texto, fontFamily: 'Inter, sans-serif' },
+      textStyle: { color: texto, fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif" },
       tooltip: { ...(opt['tooltip'] as object), backgroundColor: this.token('--lt-superficie', '#fff'), borderWidth: 0, textStyle: { color: texto } },
       ...opt,
       legend: opt['legend'] ? { textStyle: { color: tenue }, ...(opt['legend'] as object) } : undefined,

@@ -126,6 +126,7 @@ export class Shell {
   private readonly items: ItemMenu[] = [
     { ruta: '/inicio', texto: 'Inicio', icono: 'dashboard', visible: () => true },
     { ruta: '/ordenes', texto: 'Órdenes', icono: 'build', visible: () => this.sesion.puedeAlguno('ORDENES.VER', 'ORDENES.VER_ASIGNADAS') },
+    { ruta: '/agenda', texto: 'Agenda', icono: 'calendar_month', visible: () => this.sesion.puede('AGENDA.VER') },
     { ruta: '/clientes', texto: 'Clientes', icono: 'people', visible: () => this.sesion.puede('CLIENTES.VER') },
     { ruta: '/vehiculos', texto: 'Vehículos', icono: 'directions_car', visible: () => this.sesion.puede('VEHICULOS.VER') },
     { ruta: '/almacen', texto: 'Almacén', icono: 'inventory_2', visible: () => this.sesion.puede('ALMACEN.VER') },

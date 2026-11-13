@@ -1,5 +1,5 @@
 import { Component, computed, inject, signal } from '@angular/core';
-import { DatePipe, DecimalPipe } from '@angular/common';
+import { DecimalPipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -11,7 +11,7 @@ import { Grafico } from '../../shared/grafico';
 @Component({
   selector: 'lt-tablero-taller',
   standalone: true,
-  imports: [DecimalPipe, DatePipe, RouterLink, MatIconModule, MatProgressSpinnerModule, Grafico],
+  imports: [DecimalPipe, RouterLink, MatIconModule, MatProgressSpinnerModule, Grafico],
   template: `
     @if (cargando()) {
       <div class="grid place-items-center py-16"><mat-spinner diameter="36" /></div>
@@ -23,7 +23,7 @@ import { Grafico } from '../../shared/grafico';
             <span class="text-texto-tenue text-sm">Órdenes abiertas</span>
             <mat-icon class="text-marca !text-xl">build</mat-icon>
           </div>
-          <div class="text-3xl font-bold mt-1">{{ t.ordenesAbiertas }}</div>
+          <div class="text-3xl font-bold mt-1 tabular">{{ t.ordenesAbiertas }}</div>
           <div class="text-xs text-texto-tenue mt-1">{{ t.ordenesHoy }} abiertas hoy</div>
         </a>
         <div class="rounded-2xl border border-borde bg-superficie p-5">
@@ -31,7 +31,7 @@ import { Grafico } from '../../shared/grafico';
             <span class="text-texto-tenue text-sm">Cotizaciones pendientes</span>
             <mat-icon class="text-amber-500 !text-xl">hourglass_top</mat-icon>
           </div>
-          <div class="text-3xl font-bold mt-1">{{ t.cotizacionesPendientes }}</div>
+          <div class="text-3xl font-bold mt-1 tabular">{{ t.cotizacionesPendientes }}</div>
           <div class="text-xs text-texto-tenue mt-1">esperando al cliente</div>
         </div>
         <a routerLink="/almacen" class="rounded-2xl border border-borde bg-superficie p-5 hover:border-marca/40 transition-colors"
@@ -40,7 +40,7 @@ import { Grafico } from '../../shared/grafico';
             <span class="text-texto-tenue text-sm">Stock bajo mínimo</span>
             <mat-icon class="!text-xl" [class.text-marca]="t.productosBajoMinimo > 0" [class.text-texto-tenue]="t.productosBajoMinimo === 0">warning</mat-icon>
           </div>
-          <div class="text-3xl font-bold mt-1" [class.text-marca]="t.productosBajoMinimo > 0">{{ t.productosBajoMinimo }}</div>
+          <div class="text-3xl font-bold mt-1 tabular" [class.text-marca]="t.productosBajoMinimo > 0">{{ t.productosBajoMinimo }}</div>
           <div class="text-xs text-texto-tenue mt-1">producto(s) por reponer</div>
         </a>
         <div class="rounded-2xl border border-borde bg-superficie p-5">
@@ -48,23 +48,23 @@ import { Grafico } from '../../shared/grafico';
             <span class="text-texto-tenue text-sm">Trabajos del mes</span>
             <mat-icon class="text-emerald-500 !text-xl">payments</mat-icon>
           </div>
-          <div class="text-3xl font-bold mt-1">S/ {{ t.valorTrabajosMes | number: '1.0-0' }}</div>
+          <div class="text-3xl font-bold mt-1 tabular">S/ {{ t.valorTrabajosMes | number: '1.0-0' }}</div>
           <div class="text-xs text-texto-tenue mt-1">registrado, sin contar anuladas</div>
         </div>
       </div>
 
       <!-- Gráficos -->
-      <div class="grid gap-4 lg:grid-cols-2 mb-6">
-        <div class="rounded-2xl border border-borde bg-superficie p-5">
-          <h3 class="font-semibold mb-2">Órdenes por estado</h3>
+      <div class="grid gap-4 lg:grid-cols-2 mb-6 items-stretch">
+        <div class="rounded-2xl border border-borde bg-superficie p-5 flex flex-col">
+          <h3 class="text-sm font-semibold mb-3">Órdenes por estado</h3>
           <lt-grafico [option]="porEstado()" alto="300px" />
         </div>
-        <div class="rounded-2xl border border-borde bg-superficie p-5">
-          <h3 class="font-semibold mb-2">Carga por técnico</h3>
+        <div class="rounded-2xl border border-borde bg-superficie p-5 flex flex-col">
+          <h3 class="text-sm font-semibold mb-3">Carga por técnico</h3>
           @if (t.cargaPorTecnico.length) {
             <lt-grafico [option]="cargaTecnico()" alto="300px" />
           } @else {
-            <p class="text-texto-tenue text-sm py-10 text-center">Sin órdenes asignadas a técnicos.</p>
+            <div class="grid place-items-center text-texto-tenue text-sm" style="height:300px">Sin órdenes asignadas a técnicos.</div>
           }
         </div>
       </div>
@@ -72,7 +72,7 @@ import { Grafico } from '../../shared/grafico';
       <!-- Últimas órdenes -->
       <div class="rounded-2xl border border-borde bg-superficie p-5">
         <div class="flex items-center justify-between mb-3">
-          <h3 class="font-semibold">Últimas órdenes</h3>
+          <h3 class="text-sm font-semibold">Últimas órdenes</h3>
           <a routerLink="/ordenes" class="text-sm text-marca hover:underline">Ver todas</a>
         </div>
         @if (t.ultimasOrdenes.length) {

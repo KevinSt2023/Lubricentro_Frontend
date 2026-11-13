@@ -34,6 +34,12 @@ export const routes: Routes = [
         loadComponent: () => import('./features/ordenes/orden-detalle').then((m) => m.OrdenDetallePagina),
       },
       {
+        path: 'agenda',
+        canActivate: [permisoGuard],
+        data: { permiso: 'AGENDA.VER' },
+        loadComponent: () => import('./features/agenda/agenda').then((m) => m.Agenda),
+      },
+      {
         path: 'clientes',
         canActivate: [permisoGuard],
         data: { permiso: 'CLIENTES.VER' },
