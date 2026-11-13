@@ -3,9 +3,6 @@ import { FormsModule } from '@angular/forms';
 import { DecimalPipe } from '@angular/common';
 import { Observable, map } from 'rxjs';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MaestrosService } from '../maestros/maestros.service';
@@ -27,28 +24,27 @@ interface Fila {
 @Component({
   selector: 'lt-cotizacion-form-dialog',
   standalone: true,
-  imports: [
-    FormsModule, DecimalPipe, MatDialogModule, MatFormFieldModule, MatInputModule,
-    MatSelectModule, MatButtonModule, MatIconModule, Buscador,
-  ],
+  imports: [FormsModule, DecimalPipe, MatDialogModule, MatButtonModule, MatIconModule, Buscador],
   template: `
-    <h2 mat-dialog-title class="!flex items-center gap-2">
-      <mat-icon class="text-marca">request_quote</mat-icon>
-      {{ data.cotizacion ? 'Editar cotización v' + data.cotizacion.version : 'Nueva cotización' }}
+    <h2 mat-dialog-title class="!flex items-center gap-2.5 !mb-0 !pb-1">
+      <span class="grid place-items-center w-9 h-9 rounded-xl bg-marca-soft text-marca shrink-0">
+        <mat-icon class="!text-xl">request_quote</mat-icon>
+      </span>
+      <span class="text-lg font-semibold">{{ data.cotizacion ? 'Editar cotización v' + data.cotizacion.version : 'Nueva cotización' }}</span>
     </h2>
-    <mat-dialog-content class="!min-w-[min(640px,94vw)]">
-      <div class="pt-1 flex flex-col gap-4">
+    <mat-dialog-content class="!min-w-[min(640px,94vw)] !max-h-[72vh]">
+      <div class="pt-2 flex flex-col gap-4">
         @for (f of filas; track $index) {
           <div class="rounded-xl border border-borde p-3">
-            <div class="flex items-center justify-between mb-2">
-              <mat-form-field appearance="outline" subscriptSizing="dynamic" class="!w-40">
-                <mat-label>Tipo</mat-label>
-                <mat-select [(ngModel)]="f.tipo" (ngModelChange)="limpiarRef(f)">
-                  <mat-option value="SERVICIO">Servicio</mat-option>
-                  <mat-option value="REPUESTO">Repuesto</mat-option>
-                </mat-select>
-              </mat-form-field>
-              <button mat-icon-button (click)="quitar($index)" matTooltip="Quitar renglón">
+            <div class="flex items-end justify-between gap-2 mb-2">
+              <div class="w-40">
+                <label class="lt-label">Tipo</label>
+                <select class="lt-input" [(ngModel)]="f.tipo" (ngModelChange)="limpiarRef(f)">
+                  <option value="SERVICIO">Servicio</option>
+                  <option value="REPUESTO">Repuesto</option>
+                </select>
+              </div>
+              <button mat-icon-button (click)="quitar($index)" aria-label="Quitar renglón">
                 <mat-icon>delete</mat-icon>
               </button>
             </div>
@@ -57,20 +53,20 @@ interface Fila {
                          placeholder="Escribe para buscar… (o deja la descripción libre)"
                          [buscar]="f.buscar" (seleccionado)="elegir(f, $event)" />
 
-            <div class="flex flex-wrap gap-2 -mt-1">
-              <mat-form-field appearance="outline" subscriptSizing="dynamic" class="flex-1 !min-w-[12rem]">
-                <mat-label>Descripción</mat-label>
-                <input matInput [(ngModel)]="f.descripcion" />
-              </mat-form-field>
-              <mat-form-field appearance="outline" subscriptSizing="dynamic" class="!w-24">
-                <mat-label>Cant.</mat-label>
-                <input matInput type="number" min="0" [(ngModel)]="f.cantidad" />
-              </mat-form-field>
-              <mat-form-field appearance="outline" subscriptSizing="dynamic" class="!w-32">
-                <mat-label>Precio S/</mat-label>
-                <input matInput type="number" min="0" [(ngModel)]="f.precioUnitario" />
-              </mat-form-field>
-              <div class="flex items-end pb-3 w-24 justify-end font-medium">
+            <div class="flex flex-wrap gap-2 mt-2">
+              <div class="flex-1 min-w-[12rem]">
+                <label class="lt-label">Descripción</label>
+                <input class="lt-input" [(ngModel)]="f.descripcion" />
+              </div>
+              <div class="w-20">
+                <label class="lt-label">Cant.</label>
+                <input class="lt-input" type="number" min="0" [(ngModel)]="f.cantidad" />
+              </div>
+              <div class="w-28">
+                <label class="lt-label">Precio S/</label>
+                <input class="lt-input" type="number" min="0" [(ngModel)]="f.precioUnitario" />
+              </div>
+              <div class="flex items-end pb-2.5 w-24 justify-end font-medium text-sm">
                 S/ {{ (f.cantidad || 0) * (f.precioUnitario || 0) | number: '1.2-2' }}
               </div>
             </div>
@@ -81,20 +77,23 @@ interface Fila {
           <mat-icon>add</mat-icon> Agregar renglón
         </button>
 
-        <mat-form-field appearance="outline" class="w-full">
-          <mat-label>Nota para el cliente</mat-label>
-          <textarea matInput rows="2" [(ngModel)]="nota"></textarea>
-        </mat-form-field>
+        <div>
+          <label class="lt-label">Nota para el cliente</label>
+          <textarea class="lt-input" rows="2" [(ngModel)]="nota"></textarea>
+        </div>
+        <div class="w-56">
+          <label class="lt-label">Válida hasta (opcional)</label>
+          <input class="lt-input" type="date" [(ngModel)]="vigenciaHasta" />
+        </div>
 
-        <mat-form-field appearance="outline" class="!w-56">
-          <mat-label>Válida hasta (opcional)</mat-label>
-          <input matInput type="date" [(ngModel)]="vigenciaHasta" />
-        </mat-form-field>
-
-        @if (error) { <div class="text-marca text-sm">{{ error }}</div> }
+        @if (error) {
+          <div class="flex items-center gap-2 text-marca text-sm rounded-lg bg-marca-soft px-3 py-2">
+            <mat-icon class="!text-base">error_outline</mat-icon> {{ error }}
+          </div>
+        }
       </div>
     </mat-dialog-content>
-    <mat-dialog-actions align="end">
+    <mat-dialog-actions align="end" class="!px-6 !pb-5 !pt-2 gap-1">
       <div class="mr-auto text-sm text-texto-tenue">Total: <b class="text-texto">S/ {{ total() | number: '1.2-2' }}</b></div>
       <button mat-button mat-dialog-close>Cancelar</button>
       <button mat-flat-button color="primary" (click)="confirmar()">
@@ -191,9 +190,6 @@ export class CotizacionFormDialog {
 
     if (renglones.length === 0) { this.error = 'Agrega al menos un renglón con descripción o ítem del catálogo.'; return; }
     if (renglones.some((r) => r.cantidad <= 0)) { this.error = 'Cada renglón necesita una cantidad mayor que cero.'; return; }
-    if (renglones.some((r) => !r.descripcion && !r.servicioId && !r.productoId)) {
-      this.error = 'Cada renglón necesita una descripción o un ítem del catálogo.'; return;
-    }
 
     const salida: GuardarCotizacion = {
       nota: this.nota.trim() || undefined,

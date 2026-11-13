@@ -1,8 +1,6 @@
 import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -23,7 +21,7 @@ export interface ChecklistData {
 @Component({
   selector: 'lt-checklist-dialog',
   standalone: true,
-  imports: [FormsModule, MatDialogModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatButtonToggleModule, MatProgressSpinnerModule],
+  imports: [FormsModule, MatDialogModule, MatButtonModule, MatButtonToggleModule, MatProgressSpinnerModule],
   template: `
     <h2 mat-dialog-title>Checklist de inspección</h2>
     <mat-dialog-content class="!min-w-[min(560px,92vw)]">
@@ -43,8 +41,7 @@ export interface ChecklistData {
                 </mat-button-toggle-group>
               </div>
               @if (f.resultado === 'OBSERVADO' || f.resultado === 'MALO') {
-                <input [(ngModel)]="f.nota" placeholder="Nota (opcional)"
-                       class="mt-2 w-full bg-transparent border-b border-borde text-sm py-1 outline-none" />
+                <input [(ngModel)]="f.nota" placeholder="Nota (opcional)" class="lt-input !py-1.5 mt-2" />
               }
             </div>
           }

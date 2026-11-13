@@ -22,7 +22,7 @@ import { SesionService } from '../../core/sesion.service';
   selector: 'lt-clientes',
   standalone: true,
   imports: [
-    FormsModule, MatDialogModule, MatFormFieldModule, MatInputModule, MatSelectModule,
+    FormsModule, MatDialogModule,
     MatButtonModule, MatIconModule, MatMenuModule, MatTooltipModule, MatProgressSpinnerModule,
   ],
   template: `
@@ -37,18 +37,15 @@ import { SesionService } from '../../core/sesion.service';
     </div>
 
     <div class="flex flex-wrap gap-3 mb-4">
-      <mat-form-field appearance="outline" class="!w-64" subscriptSizing="dynamic">
-        <mat-icon matPrefix class="text-texto-tenue !ml-2">search</mat-icon>
-        <input matInput placeholder="Nombre, documento o teléfono" [(ngModel)]="buscar" (keyup.enter)="recargar()" />
-      </mat-form-field>
-      <mat-form-field appearance="outline" class="!w-40" subscriptSizing="dynamic">
-        <mat-label>Tipo</mat-label>
-        <mat-select [(ngModel)]="tipo" (selectionChange)="recargar()">
-          <mat-option value="">Todos</mat-option>
-          <mat-option value="PARTICULAR">Particular</mat-option>
-          <mat-option value="EMPRESA">Empresa</mat-option>
-        </mat-select>
-      </mat-form-field>
+      <div class="relative w-72">
+        <mat-icon class="absolute left-3 top-1/2 -translate-y-1/2 text-texto-tenue !text-xl pointer-events-none">search</mat-icon>
+        <input class="lt-input !pl-10" placeholder="Nombre, documento o teléfono" [(ngModel)]="buscar" (keyup.enter)="recargar()" />
+      </div>
+      <select class="lt-input !w-44" [(ngModel)]="tipo" (change)="recargar()">
+        <option value="">Todos los tipos</option>
+        <option value="PARTICULAR">Particular</option>
+        <option value="EMPRESA">Empresa</option>
+      </select>
     </div>
 
     <div class="rounded-2xl border border-borde bg-superficie overflow-hidden">

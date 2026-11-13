@@ -17,8 +17,8 @@ html {
         tertiary: mat.$blue-palette,
       ),
       typography: (
-        plain-family: 'Inter, Roboto, system-ui, sans-serif',
-        brand-family: 'Inter, Roboto, system-ui, sans-serif',
+        plain-family: '"Plus Jakarta Sans", system-ui, sans-serif',
+        brand-family: '"Plus Jakarta Sans", system-ui, sans-serif',
       ),
       density: 0,
     )
@@ -94,11 +94,48 @@ body {
 }
 
 body {
-  font-family: 'Inter', 'Roboto', system-ui, sans-serif;
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
   background: var(--lt-fondo);
   color: var(--lt-texto);
   -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
+
+// Títulos un pelín más apretados, para que respiren parejo.
+h1, h2, h3 { letter-spacing: -0.015em; }
+
+// Números alineados (tablas, precios, KPIs): ancho fijo por dígito.
+.tabular, table td, table th { font-variant-numeric: tabular-nums; }
+
+// ===========================================================================
+// Inputs de marca (sin Angular Material): caja limpia, label arriba, foco rojo.
+// Se usan en los formularios/diálogos. Estado de error con [class.lt-mal].
+// ===========================================================================
+.lt-seccion {
+  font-size: .7rem; font-weight: 600; text-transform: uppercase; letter-spacing: .05em;
+  color: var(--lt-texto-tenue); margin-bottom: .6rem; padding-bottom: .4rem;
+  border-bottom: 1px solid var(--lt-borde);
+}
+.lt-label {
+  display: block; font-size: .8rem; font-weight: 500;
+  color: var(--lt-texto-tenue); margin-bottom: .3rem;
+}
+.lt-input {
+  width: 100%; border: 1px solid var(--lt-borde); background: var(--lt-superficie-2);
+  color: var(--lt-texto); border-radius: .6rem; padding: .6rem .7rem; font-size: .9rem;
+  outline: none; transition: border-color .15s, box-shadow .15s; font-family: inherit;
+}
+.lt-input::placeholder { color: var(--lt-texto-tenue); opacity: .75; }
+.lt-input:focus { border-color: var(--lt-rojo); box-shadow: 0 0 0 1px var(--lt-rojo); }
+.lt-input.lt-mal { border-color: var(--lt-rojo); }
+.lt-input:disabled { opacity: .55; cursor: not-allowed; }
+textarea.lt-input { resize: vertical; min-height: 2.6rem; line-height: 1.4; }
+select.lt-input {
+  appearance: none; -webkit-appearance: none; cursor: pointer; padding-right: 2rem;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%238a94a2' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right .6rem center;
+}
+.lt-error { color: var(--lt-rojo); font-size: .72rem; margin-top: .25rem; }
 
 // Scrollbar discreta, acorde a la marca.
 ::-webkit-scrollbar {

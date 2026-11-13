@@ -1,10 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
 import { AbstractControl, FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
 import { SesionService } from '../../core/sesion.service';
 import { ErrorApi } from '../../core/modelos';
 import { Marca } from '../../shared/marca';
@@ -12,7 +9,7 @@ import { Marca } from '../../shared/marca';
 @Component({
   selector: 'lt-cambiar-clave',
   standalone: true,
-  imports: [ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatIconModule, Marca],
+  imports: [ReactiveFormsModule, MatButtonModule, Marca],
   template: `
     <div class="min-h-screen grid place-items-center bg-fondo p-6">
       <div class="w-full max-w-sm">
@@ -23,26 +20,26 @@ import { Marca } from '../../shared/marca';
             Es tu primer ingreso: elige una contraseña nueva para continuar.
           </p>
 
-          <form [formGroup]="form" (ngSubmit)="enviar()" class="flex flex-col gap-2">
-            <mat-form-field appearance="outline">
-              <mat-label>Contraseña actual (la temporal)</mat-label>
-              <input matInput type="password" formControlName="claveActual" autocomplete="current-password" />
-            </mat-form-field>
-            <mat-form-field appearance="outline">
-              <mat-label>Contraseña nueva</mat-label>
-              <input matInput type="password" formControlName="claveNueva" autocomplete="new-password" />
-              <mat-hint>Mínimo 8 caracteres.</mat-hint>
-            </mat-form-field>
-            <mat-form-field appearance="outline">
-              <mat-label>Repite la nueva</mat-label>
-              <input matInput type="password" formControlName="repetir" autocomplete="new-password" />
-            </mat-form-field>
+          <form [formGroup]="form" (ngSubmit)="enviar()" class="flex flex-col gap-4">
+            <div>
+              <label class="lt-label">Contraseña actual (la temporal)</label>
+              <input class="lt-input" type="password" formControlName="claveActual" autocomplete="current-password" />
+            </div>
+            <div>
+              <label class="lt-label">Contraseña nueva</label>
+              <input class="lt-input" type="password" formControlName="claveNueva" autocomplete="new-password" />
+              <p class="text-xs text-texto-tenue mt-1">Mínimo 8 caracteres.</p>
+            </div>
+            <div>
+              <label class="lt-label">Repite la nueva</label>
+              <input class="lt-input" type="password" formControlName="repetir" autocomplete="new-password" />
+            </div>
 
             @if (error()) {
               <div class="rounded-lg bg-marca-soft text-marca px-4 py-3 text-sm">{{ error() }}</div>
             }
 
-            <button mat-flat-button color="primary" type="submit" class="!h-12 !mt-2" [disabled]="cargando()">
+            <button mat-flat-button color="primary" type="submit" class="!h-12 !mt-1" [disabled]="cargando()">
               Guardar y entrar
             </button>
           </form>

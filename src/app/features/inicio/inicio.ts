@@ -2,6 +2,7 @@ import { Component, computed, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { SesionService } from '../../core/sesion.service';
+import { TableroTallerPanel } from './tablero-taller';
 
 interface Acceso {
   ruta: string;
@@ -14,7 +15,7 @@ interface Acceso {
 @Component({
   selector: 'lt-inicio',
   standalone: true,
-  imports: [RouterLink, MatIconModule],
+  imports: [RouterLink, MatIconModule, TableroTallerPanel],
   template: `
     <div class="mb-8">
       <h1 class="text-2xl font-bold">{{ saludo() }}, {{ primerNombre() }}.</h1>
@@ -42,10 +43,10 @@ interface Acceso {
       }
     </div>
 
-    @if (!sesion.esSuperAdmin()) {
-      <div class="mt-8 rounded-2xl border border-dashed border-borde p-6 text-center text-texto-tenue">
-        <mat-icon class="!w-8 !h-8 !text-3xl text-acero-400">insights</mat-icon>
-        <p class="mt-2 text-sm">El tablero con indicadores llega junto con los módulos.</p>
+    @if (!sesion.esSuperAdmin() && sesion.puede('ORDENES.VER')) {
+      <div class="mt-8">
+        <h2 class="text-lg font-semibold mb-3">Tablero del taller</h2>
+        <lt-tablero-taller />
       </div>
     }
   `,

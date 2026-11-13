@@ -1,103 +1,117 @@
 import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { ConsolaService } from './consola.service';
 import { EmpresaCreada, Plan } from './consola.models';
 import { ErrorApi } from '../../core/modelos';
 
-/** Alta de una empresa: empresa + sede principal + Admin, en un paso. */
+/**
+ * Alta de una empresa: empresa + sede principal + Admin, en un paso.
+ * Inputs propios (Tailwind), no los campos de Material: caja limpia, label
+ * arriba, alineacion pareja en dos columnas.
+ */
 @Component({
   selector: 'lt-empresa-form',
   standalone: true,
-  imports: [
-    ReactiveFormsModule,
-    MatDialogModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatSelectModule,
-    MatButtonModule,
-    MatIconModule,
-  ],
+  imports: [ReactiveFormsModule, MatDialogModule, MatButtonModule, MatIconModule],
   template: `
-    <h2 mat-dialog-title class="!flex items-center gap-2">
-      <mat-icon class="text-marca">add_business</mat-icon> Nueva empresa
+    <h2 mat-dialog-title class="!flex items-center gap-2.5 !mb-0 !pb-1">
+      <span class="grid place-items-center w-9 h-9 rounded-xl bg-marca-soft text-marca shrink-0">
+        <mat-icon class="!text-xl">add_business</mat-icon>
+      </span>
+      <span class="text-lg font-semibold">Nueva empresa</span>
     </h2>
 
-    <mat-dialog-content>
-      <form [formGroup]="form" class="flex flex-col gap-1 pt-2">
-        <div class="text-xs font-semibold text-texto-tenue uppercase tracking-wide mb-1">Datos de la empresa</div>
-        <div class="grid sm:grid-cols-2 gap-x-4">
-          <mat-form-field appearance="outline">
-            <mat-label>RUC</mat-label>
-            <input matInput formControlName="ruc" maxlength="11" />
-          </mat-form-field>
-          <mat-form-field appearance="outline">
-            <mat-label>Plan</mat-label>
-            <mat-select formControlName="planCodigo">
-              @for (p of planes(); track p.id) {
-                <mat-option [value]="p.codigo">{{ p.nombre }} — S/ {{ p.precioMensual }}</mat-option>
-              }
-            </mat-select>
-          </mat-form-field>
-        </div>
-        <mat-form-field appearance="outline">
-          <mat-label>Razón social</mat-label>
-          <input matInput formControlName="razonSocial" />
-        </mat-form-field>
-        <mat-form-field appearance="outline">
-          <mat-label>Nombre comercial</mat-label>
-          <input matInput formControlName="nombreComercial" />
-        </mat-form-field>
-        <div class="grid sm:grid-cols-2 gap-x-4">
-          <mat-form-field appearance="outline">
-            <mat-label>Teléfono</mat-label>
-            <input matInput formControlName="telefono" />
-          </mat-form-field>
-          <mat-form-field appearance="outline">
-            <mat-label>Días de cortesía</mat-label>
-            <input matInput type="number" formControlName="diasDeCortesia" min="0" max="90" />
-          </mat-form-field>
-        </div>
+    <mat-dialog-content class="!max-h-[72vh]">
+      <form [formGroup]="form" class="pt-2 flex flex-col gap-5">
+        <!-- Empresa -->
+        <section>
+          <div class="lt-seccion">Datos de la empresa</div>
+          <div class="grid sm:grid-cols-2 gap-x-4 gap-y-3">
+            <div>
+              <label class="lt-label">RUC <span class="text-marca">*</span></label>
+              <input class="lt-input" [class.lt-mal]="malo('ruc')" formControlName="ruc"
+                     maxlength="11" inputmode="numeric" placeholder="11 dígitos" />
+              @if (malo('ruc')) { <p class="lt-error">RUC de 11 dígitos.</p> }
+            </div>
+            <div>
+              <label class="lt-label">Plan <span class="text-marca">*</span></label>
+              <select class="lt-input" [class.lt-mal]="malo('planCodigo')" formControlName="planCodigo">
+                <option value="" disabled>Elige un plan…</option>
+                @for (p of planes(); track p.id) {
+                  <option [value]="p.codigo">{{ p.nombre }} — S/ {{ p.precioMensual }}</option>
+                }
+              </select>
+              @if (malo('planCodigo')) { <p class="lt-error">Elige un plan.</p> }
+            </div>
+            <div class="sm:col-span-2">
+              <label class="lt-label">Razón social <span class="text-marca">*</span></label>
+              <input class="lt-input" [class.lt-mal]="malo('razonSocial')" formControlName="razonSocial" />
+              @if (malo('razonSocial')) { <p class="lt-error">Obligatorio.</p> }
+            </div>
+            <div class="sm:col-span-2">
+              <label class="lt-label">Nombre comercial <span class="text-marca">*</span></label>
+              <input class="lt-input" [class.lt-mal]="malo('nombreComercial')" formControlName="nombreComercial" />
+              @if (malo('nombreComercial')) { <p class="lt-error">Obligatorio.</p> }
+            </div>
+            <div>
+              <label class="lt-label">Teléfono</label>
+              <input class="lt-input" formControlName="telefono" inputmode="tel" />
+            </div>
+            <div>
+              <label class="lt-label">Días de cortesía</label>
+              <input class="lt-input" type="number" formControlName="diasDeCortesia" min="0" max="90" />
+            </div>
+          </div>
+        </section>
 
-        <div class="text-xs font-semibold text-texto-tenue uppercase tracking-wide mb-1 mt-2">Admin de la empresa</div>
-        <div class="grid sm:grid-cols-2 gap-x-4" formGroupName="admin">
-          <mat-form-field appearance="outline">
-            <mat-label>Nombres</mat-label>
-            <input matInput formControlName="nombres" />
-          </mat-form-field>
-          <mat-form-field appearance="outline">
-            <mat-label>Apellidos</mat-label>
-            <input matInput formControlName="apellidos" />
-          </mat-form-field>
-          <mat-form-field appearance="outline" class="sm:col-span-2">
-            <mat-label>Correo del Admin</mat-label>
-            <input matInput type="email" formControlName="email" />
-          </mat-form-field>
-        </div>
+        <!-- Admin -->
+        <section formGroupName="admin">
+          <div class="lt-seccion">Admin de la empresa</div>
+          <div class="grid sm:grid-cols-2 gap-x-4 gap-y-3">
+            <div>
+              <label class="lt-label">Nombres <span class="text-marca">*</span></label>
+              <input class="lt-input" [class.lt-mal]="malo('admin.nombres')" formControlName="nombres" />
+              @if (malo('admin.nombres')) { <p class="lt-error">Obligatorio.</p> }
+            </div>
+            <div>
+              <label class="lt-label">Apellidos <span class="text-marca">*</span></label>
+              <input class="lt-input" [class.lt-mal]="malo('admin.apellidos')" formControlName="apellidos" />
+              @if (malo('admin.apellidos')) { <p class="lt-error">Obligatorio.</p> }
+            </div>
+            <div class="sm:col-span-2">
+              <label class="lt-label">Correo del Admin <span class="text-marca">*</span></label>
+              <input class="lt-input" [class.lt-mal]="malo('admin.email')" type="email" formControlName="email"
+                     placeholder="correo@dominio.pe" />
+              @if (malo('admin.email')) { <p class="lt-error">Correo válido obligatorio.</p> }
+            </div>
+          </div>
+        </section>
 
-        <div class="text-xs font-semibold text-texto-tenue uppercase tracking-wide mb-1 mt-2">Sede principal</div>
-        <div formGroupName="sedePrincipal">
-          <mat-form-field appearance="outline" class="w-full">
-            <mat-label>Nombre de la sede</mat-label>
-            <input matInput formControlName="nombre" />
-          </mat-form-field>
-        </div>
+        <!-- Sede -->
+        <section formGroupName="sedePrincipal">
+          <div class="lt-seccion">Sede principal</div>
+          <div>
+            <label class="lt-label">Nombre de la sede <span class="text-marca">*</span></label>
+            <input class="lt-input" [class.lt-mal]="malo('sedePrincipal.nombre')" formControlName="nombre" />
+            @if (malo('sedePrincipal.nombre')) { <p class="lt-error">Obligatorio.</p> }
+          </div>
+        </section>
 
         @if (error()) {
-          <div class="rounded-lg bg-marca-soft text-marca px-4 py-3 text-sm">{{ error() }}</div>
+          <div class="flex items-center gap-2 rounded-lg bg-marca-soft text-marca px-4 py-3 text-sm">
+            <mat-icon class="!text-base">error_outline</mat-icon> {{ error() }}
+          </div>
         }
       </form>
     </mat-dialog-content>
 
-    <mat-dialog-actions align="end">
+    <mat-dialog-actions align="end" class="!px-6 !pb-5 !pt-2 gap-1">
       <button mat-button mat-dialog-close [disabled]="guardando()">Cancelar</button>
       <button mat-flat-button color="primary" (click)="guardar()" [disabled]="guardando()">
-        Crear empresa
+        <mat-icon>add</mat-icon> Crear empresa
       </button>
     </mat-dialog-actions>
   `,
@@ -132,9 +146,16 @@ export class EmpresaForm {
     this.api.planes().subscribe((p) => this.planes.set(p.filter((x) => x.activo)));
   }
 
+  malo(path: string): boolean {
+    const c = this.form.get(path);
+    return !!c && c.invalid && (c.touched || c.dirty);
+  }
+
   guardar(): void {
-    if (this.form.invalid || this.guardando()) {
+    if (this.guardando()) return;
+    if (this.form.invalid) {
       this.form.markAllAsTouched();
+      this.error.set('Revisa los campos marcados en rojo: faltan datos obligatorios.');
       return;
     }
     this.guardando.set(true);

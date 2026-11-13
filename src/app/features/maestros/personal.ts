@@ -2,9 +2,6 @@ import { Component, inject, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
@@ -21,7 +18,7 @@ import { SesionService } from '../../core/sesion.service';
   selector: 'lt-personal',
   standalone: true,
   imports: [
-    DatePipe, FormsModule, MatDialogModule, MatFormFieldModule, MatInputModule, MatSelectModule,
+    DatePipe, FormsModule, MatDialogModule,
     MatButtonModule, MatIconModule, MatMenuModule, MatProgressSpinnerModule,
   ],
   template: `
@@ -36,17 +33,14 @@ import { SesionService } from '../../core/sesion.service';
     </div>
 
     <div class="flex flex-wrap gap-3 mb-4">
-      <mat-form-field appearance="outline" class="!w-64" subscriptSizing="dynamic">
-        <mat-icon matPrefix class="text-texto-tenue !ml-2">search</mat-icon>
-        <input matInput placeholder="Nombre, correo o DNI" [(ngModel)]="buscar" (keyup.enter)="recargar()" />
-      </mat-form-field>
-      <mat-form-field appearance="outline" class="!w-48" subscriptSizing="dynamic">
-        <mat-label>Rol</mat-label>
-        <mat-select [(ngModel)]="rolId" (selectionChange)="recargar()">
-          <mat-option [value]="0">Todos</mat-option>
-          @for (r of rolesLista; track r.id) { <mat-option [value]="r.id">{{ r.nombre }}</mat-option> }
-        </mat-select>
-      </mat-form-field>
+      <div class="relative w-72">
+        <mat-icon class="absolute left-3 top-1/2 -translate-y-1/2 text-texto-tenue !text-xl pointer-events-none">search</mat-icon>
+        <input class="lt-input !pl-10" placeholder="Nombre, correo o DNI" [(ngModel)]="buscar" (keyup.enter)="recargar()" />
+      </div>
+      <select class="lt-input !w-48" [(ngModel)]="rolId" (change)="recargar()">
+        <option [ngValue]="0">Todos los roles</option>
+        @for (r of rolesLista; track r.id) { <option [ngValue]="r.id">{{ r.nombre }}</option> }
+      </select>
     </div>
 
     <div class="rounded-2xl border border-borde bg-superficie overflow-hidden">

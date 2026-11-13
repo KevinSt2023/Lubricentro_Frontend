@@ -21,7 +21,7 @@ import { SesionService } from '../../core/sesion.service';
   selector: 'lt-vehiculos',
   standalone: true,
   imports: [
-    DecimalPipe, FormsModule, MatDialogModule, MatFormFieldModule, MatInputModule,
+    DecimalPipe, FormsModule, MatDialogModule,
     MatButtonModule, MatIconModule, MatMenuModule, MatProgressSpinnerModule,
   ],
   template: `
@@ -36,10 +36,10 @@ import { SesionService } from '../../core/sesion.service';
     </div>
 
     <div class="flex flex-wrap gap-3 mb-4">
-      <mat-form-field appearance="outline" class="!w-72" subscriptSizing="dynamic">
-        <mat-icon matPrefix class="text-texto-tenue !ml-2">search</mat-icon>
-        <input matInput placeholder="Placa, marca o modelo" [(ngModel)]="buscar" (keyup.enter)="recargar()" />
-      </mat-form-field>
+      <div class="relative w-72">
+        <mat-icon class="absolute left-3 top-1/2 -translate-y-1/2 text-texto-tenue !text-xl pointer-events-none">search</mat-icon>
+        <input class="lt-input !pl-10" placeholder="Placa, marca o modelo" [(ngModel)]="buscar" (keyup.enter)="recargar()" />
+      </div>
     </div>
 
     <div class="rounded-2xl border border-borde bg-superficie overflow-hidden">

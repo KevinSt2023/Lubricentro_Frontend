@@ -3,9 +3,6 @@ import { DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -24,9 +21,6 @@ import { ClaveDialog } from '../../shared/clave-dialog';
     FormsModule,
     RouterLink,
     MatDialogModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatSelectModule,
     MatButtonModule,
     MatIconModule,
     MatProgressSpinnerModule,
@@ -35,32 +29,21 @@ import { ClaveDialog } from '../../shared/clave-dialog';
   template: `
     <!-- Filtros -->
     <div class="flex flex-wrap items-center gap-3 mb-4">
-      <mat-form-field appearance="outline" class="!w-64" subscriptSizing="dynamic">
-        <mat-icon matPrefix class="text-texto-tenue !ml-2">search</mat-icon>
-        <input matInput placeholder="Buscar por nombre o RUC" [(ngModel)]="buscar"
-               (keyup.enter)="recargar()" />
-      </mat-form-field>
-
-      <mat-form-field appearance="outline" class="!w-44" subscriptSizing="dynamic">
-        <mat-label>Estado</mat-label>
-        <mat-select [(ngModel)]="estado" (selectionChange)="recargar()">
-          <mat-option value="">Todos</mat-option>
-          <mat-option value="AL_DIA">Al día</mat-option>
-          <mat-option value="POR_VENCER">Por vencer</mat-option>
-          <mat-option value="VENCIDO">Vencido</mat-option>
-          <mat-option value="INACTIVA">Inactiva</mat-option>
-        </mat-select>
-      </mat-form-field>
-
-      <mat-form-field appearance="outline" class="!w-44" subscriptSizing="dynamic">
-        <mat-label>Plan</mat-label>
-        <mat-select [(ngModel)]="planId" (selectionChange)="recargar()">
-          <mat-option [value]="0">Todos</mat-option>
-          @for (p of planes(); track p.id) {
-            <mat-option [value]="p.id">{{ p.nombre }}</mat-option>
-          }
-        </mat-select>
-      </mat-form-field>
+      <div class="relative w-64">
+        <mat-icon class="absolute left-3 top-1/2 -translate-y-1/2 text-texto-tenue !text-xl pointer-events-none">search</mat-icon>
+        <input class="lt-input !pl-10" placeholder="Buscar por nombre o RUC" [(ngModel)]="buscar" (keyup.enter)="recargar()" />
+      </div>
+      <select class="lt-input !w-44" [(ngModel)]="estado" (change)="recargar()">
+        <option value="">Todos los estados</option>
+        <option value="AL_DIA">Al día</option>
+        <option value="POR_VENCER">Por vencer</option>
+        <option value="VENCIDO">Vencido</option>
+        <option value="INACTIVA">Inactiva</option>
+      </select>
+      <select class="lt-input !w-44" [(ngModel)]="planId" (change)="recargar()">
+        <option [ngValue]="0">Todos los planes</option>
+        @for (p of planes(); track p.id) { <option [ngValue]="p.id">{{ p.nombre }}</option> }
+      </select>
 
       <span class="flex-1"></span>
 

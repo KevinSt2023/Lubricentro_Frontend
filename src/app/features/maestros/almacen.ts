@@ -2,9 +2,6 @@ import { Component, inject, signal } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatIconModule } from '@angular/material/icon';
@@ -22,7 +19,7 @@ import { SesionService } from '../../core/sesion.service';
   selector: 'lt-almacen',
   standalone: true,
   imports: [
-    DecimalPipe, FormsModule, MatDialogModule, MatFormFieldModule, MatInputModule, MatSelectModule,
+    DecimalPipe, FormsModule, MatDialogModule,
     MatButtonModule, MatButtonToggleModule, MatIconModule, MatMenuModule, MatProgressSpinnerModule,
   ],
   template: `
@@ -37,17 +34,14 @@ import { SesionService } from '../../core/sesion.service';
     </div>
 
     <div class="flex flex-wrap items-center gap-3 mb-4">
-      <mat-form-field appearance="outline" class="!w-64" subscriptSizing="dynamic">
-        <mat-icon matPrefix class="text-texto-tenue !ml-2">search</mat-icon>
-        <input matInput placeholder="Nombre, código o barras" [(ngModel)]="buscar" (keyup.enter)="recargar()" />
-      </mat-form-field>
-      <mat-form-field appearance="outline" class="!w-44" subscriptSizing="dynamic">
-        <mat-label>Tipo</mat-label>
-        <mat-select [(ngModel)]="tipo" (selectionChange)="recargar()">
-          <mat-option value="">Todos</mat-option>
-          @for (t of tipos; track t) { <mat-option [value]="t">{{ t }}</mat-option> }
-        </mat-select>
-      </mat-form-field>
+      <div class="relative w-64">
+        <mat-icon class="absolute left-3 top-1/2 -translate-y-1/2 text-texto-tenue !text-xl pointer-events-none">search</mat-icon>
+        <input class="lt-input !pl-10" placeholder="Nombre, código o barras" [(ngModel)]="buscar" (keyup.enter)="recargar()" />
+      </div>
+      <select class="lt-input !w-44" [(ngModel)]="tipo" (change)="recargar()">
+        <option value="">Todos los tipos</option>
+        @for (t of tipos; track t) { <option [value]="t">{{ t }}</option> }
+      </select>
       <mat-button-toggle-group [(ngModel)]="bajoMinimo" (change)="recargar()" class="!h-10">
         <mat-button-toggle [value]="false">Todos</mat-button-toggle>
         <mat-button-toggle [value]="true">Bajo mínimo</mat-button-toggle>

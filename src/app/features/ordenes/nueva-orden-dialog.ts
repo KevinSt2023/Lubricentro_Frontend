@@ -2,9 +2,6 @@ import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { map } from 'rxjs';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MaestrosService } from '../maestros/maestros.service';
@@ -15,55 +12,59 @@ import { Buscador, OpcionBuscar } from '../../shared/buscador';
 @Component({
   selector: 'lt-nueva-orden-dialog',
   standalone: true,
-  imports: [
-    FormsModule, MatDialogModule, MatFormFieldModule, MatInputModule, MatSelectModule,
-    MatButtonModule, MatIconModule, Buscador,
-  ],
+  imports: [FormsModule, MatDialogModule, MatButtonModule, MatIconModule, Buscador],
   template: `
-    <h2 mat-dialog-title class="!flex items-center gap-2">
-      <mat-icon class="text-marca">build</mat-icon> Nueva orden
+    <h2 mat-dialog-title class="!flex items-center gap-2.5 !mb-0 !pb-1">
+      <span class="grid place-items-center w-9 h-9 rounded-xl bg-marca-soft text-marca shrink-0">
+        <mat-icon class="!text-xl">build</mat-icon>
+      </span>
+      <span class="text-lg font-semibold">Nueva orden</span>
     </h2>
-    <mat-dialog-content class="!min-w-[min(460px,92vw)]">
-      <div class="pt-1">
+    <mat-dialog-content class="!min-w-[min(460px,92vw)] !max-h-[72vh]">
+      <div class="pt-2 flex flex-col gap-3">
         <lt-buscador label="Vehículo (placa, marca o modelo)"
                      placeholder="Escribe la placa…" [buscar]="buscarVehiculo"
                      (seleccionado)="elegirVehiculo($event)" />
 
         @if (clienteNombre()) {
-          <div class="-mt-2 mb-3 flex items-center gap-2 text-sm text-texto-tenue">
+          <div class="-mt-1 flex items-center gap-2 text-sm text-texto-tenue">
             <mat-icon class="!text-base">person</mat-icon> Cliente: <b class="text-texto">{{ clienteNombre() }}</b>
           </div>
         }
 
-        <mat-form-field appearance="outline" class="w-full">
-          <mat-label>Sede</mat-label>
-          <mat-select [(ngModel)]="sedeId">
-            @for (s of sedes(); track s.id) { <mat-option [value]="s.id">{{ s.nombre }}</mat-option> }
-          </mat-select>
-        </mat-form-field>
+        <div>
+          <label class="lt-label">Sede</label>
+          <select class="lt-input" [(ngModel)]="sedeId">
+            @for (s of sedes(); track s.id) { <option [ngValue]="s.id">{{ s.nombre }}</option> }
+          </select>
+        </div>
 
-        <mat-form-field appearance="outline" class="w-full">
-          <mat-label>Estado inicial</mat-label>
-          <mat-select [(ngModel)]="estadoInicial">
-            <mat-option value="RECIBIDO">Recibido (ingreso directo)</mat-option>
-            <mat-option value="CITA_REGISTRADA">Cita registrada</mat-option>
-          </mat-select>
-        </mat-form-field>
+        <div>
+          <label class="lt-label">Estado inicial</label>
+          <select class="lt-input" [(ngModel)]="estadoInicial">
+            <option value="RECIBIDO">Recibido (ingreso directo)</option>
+            <option value="CITA_REGISTRADA">Cita registrada</option>
+          </select>
+        </div>
 
-        <mat-form-field appearance="outline" class="w-full">
-          <mat-label>Kilometraje de ingreso</mat-label>
-          <input matInput type="number" [(ngModel)]="kilometrajeIngreso" />
-        </mat-form-field>
+        <div>
+          <label class="lt-label">Kilometraje de ingreso</label>
+          <input class="lt-input" type="number" min="0" [(ngModel)]="kilometrajeIngreso" />
+        </div>
 
-        <mat-form-field appearance="outline" class="w-full">
-          <mat-label>Observaciones</mat-label>
-          <textarea matInput rows="2" [(ngModel)]="observaciones"></textarea>
-        </mat-form-field>
+        <div>
+          <label class="lt-label">Observaciones</label>
+          <textarea class="lt-input" rows="2" [(ngModel)]="observaciones"></textarea>
+        </div>
 
-        @if (error()) { <div class="text-marca text-sm">{{ error() }}</div> }
+        @if (error()) {
+          <div class="flex items-center gap-2 text-marca text-sm rounded-lg bg-marca-soft px-3 py-2">
+            <mat-icon class="!text-base">error_outline</mat-icon> {{ error() }}
+          </div>
+        }
       </div>
     </mat-dialog-content>
-    <mat-dialog-actions align="end">
+    <mat-dialog-actions align="end" class="!px-6 !pb-5 !pt-2 gap-1">
       <button mat-button mat-dialog-close>Cancelar</button>
       <button mat-flat-button color="primary" (click)="confirmar()">Abrir orden</button>
     </mat-dialog-actions>
@@ -84,7 +85,6 @@ export class NuevaOrdenDialog {
   kilometrajeIngreso: number | null = null;
   observaciones = '';
 
-  // Cache de la última búsqueda para recuperar el cliente del vehículo elegido.
   private cache = new Map<number, { clienteId: number; cliente: string }>();
 
   constructor() {
@@ -120,7 +120,7 @@ export class NuevaOrdenDialog {
     this.ref.close({
       clienteId: this.clienteId,
       vehiculoId: this.vehiculoId,
-      sedeId: this.sedeId,
+      sedeId: Number(this.sedeId),
       estadoInicial: this.estadoInicial,
       kilometrajeIngreso: this.kilometrajeIngreso || undefined,
       observaciones: this.observaciones || undefined,

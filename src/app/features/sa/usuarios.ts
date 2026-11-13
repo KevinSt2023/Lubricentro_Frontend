@@ -1,9 +1,6 @@
 import { Component, inject, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -21,37 +18,27 @@ const ROLES_SA: Record<number, string> = {
   selector: 'lt-sa-usuarios',
   standalone: true,
   imports: [
-    DatePipe, FormsModule, MatFormFieldModule, MatInputModule, MatSelectModule,
-    MatButtonModule, MatIconModule, MatProgressSpinnerModule,
+    DatePipe, FormsModule, MatButtonModule, MatIconModule, MatProgressSpinnerModule,
   ],
   template: `
     <div class="flex flex-wrap items-end gap-3 mb-4">
-      <mat-form-field appearance="outline" class="!w-64" subscriptSizing="dynamic">
-        <mat-icon matPrefix class="text-texto-tenue !ml-2">search</mat-icon>
-        <input matInput placeholder="Nombre, correo o DNI" [(ngModel)]="buscar" (keyup.enter)="recargar()" />
-      </mat-form-field>
-      <mat-form-field appearance="outline" class="!w-56" subscriptSizing="dynamic">
-        <mat-label>Empresa</mat-label>
-        <mat-select [(ngModel)]="empresaId" (selectionChange)="recargar()">
-          <mat-option [value]="0">Todas</mat-option>
-          @for (e of empresas(); track e.id) { <mat-option [value]="e.id">{{ e.nombre }}</mat-option> }
-        </mat-select>
-      </mat-form-field>
-      <mat-form-field appearance="outline" class="!w-44" subscriptSizing="dynamic">
-        <mat-label>Rol</mat-label>
-        <mat-select [(ngModel)]="rolId" (selectionChange)="recargar()">
-          <mat-option [value]="-1">Todos</mat-option>
-          @for (r of roles; track r.id) { <mat-option [value]="r.id">{{ r.nombre }}</mat-option> }
-        </mat-select>
-      </mat-form-field>
-      <mat-form-field appearance="outline" class="!w-40" subscriptSizing="dynamic">
-        <mat-label>Estado</mat-label>
-        <mat-select [(ngModel)]="estado" (selectionChange)="recargar()">
-          <mat-option value="">Todos</mat-option>
-          <mat-option value="activo">Activos</mat-option>
-          <mat-option value="inactivo">Inactivos</mat-option>
-        </mat-select>
-      </mat-form-field>
+      <div class="relative w-64">
+        <mat-icon class="absolute left-3 top-1/2 -translate-y-1/2 text-texto-tenue !text-xl pointer-events-none">search</mat-icon>
+        <input class="lt-input !pl-10" placeholder="Nombre, correo o DNI" [(ngModel)]="buscar" (keyup.enter)="recargar()" />
+      </div>
+      <select class="lt-input !w-56" [(ngModel)]="empresaId" (change)="recargar()">
+        <option [ngValue]="0">Todas las empresas</option>
+        @for (e of empresas(); track e.id) { <option [ngValue]="e.id">{{ e.nombre }}</option> }
+      </select>
+      <select class="lt-input !w-44" [(ngModel)]="rolId" (change)="recargar()">
+        <option [ngValue]="-1">Todos los roles</option>
+        @for (r of roles; track r.id) { <option [ngValue]="r.id">{{ r.nombre }}</option> }
+      </select>
+      <select class="lt-input !w-40" [(ngModel)]="estado" (change)="recargar()">
+        <option value="">Todos</option>
+        <option value="activo">Activos</option>
+        <option value="inactivo">Inactivos</option>
+      </select>
     </div>
 
     <div class="rounded-2xl border border-borde bg-superficie overflow-hidden">

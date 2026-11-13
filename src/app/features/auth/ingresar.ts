@@ -1,8 +1,6 @@
 import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -15,8 +13,6 @@ import { Marca } from '../../shared/marca';
   standalone: true,
   imports: [
     ReactiveFormsModule,
-    MatFormFieldModule,
-    MatInputModule,
     MatButtonModule,
     MatIconModule,
     MatProgressSpinnerModule,
@@ -54,23 +50,28 @@ import { Marca } from '../../shared/marca';
           <h2 class="text-2xl font-bold text-texto">Ingresar</h2>
           <p class="text-texto-tenue mt-1 mb-6">Entra con tu cuenta del equipo.</p>
 
-          <form [formGroup]="form" (ngSubmit)="enviar()" class="flex flex-col gap-2">
-            <mat-form-field appearance="outline">
-              <mat-label>Correo</mat-label>
-              <input matInput type="email" formControlName="email" autocomplete="username"
-                     placeholder="tucorreo@taller.pe" />
-              <mat-icon matSuffix>mail</mat-icon>
-            </mat-form-field>
+          <form [formGroup]="form" (ngSubmit)="enviar()" class="flex flex-col gap-4">
+            <div>
+              <label class="lt-label">Correo</label>
+              <div class="relative">
+                <input class="lt-input !pr-10" type="email" formControlName="email" autocomplete="username"
+                       placeholder="tucorreo@taller.pe" />
+                <mat-icon class="absolute right-3 top-1/2 -translate-y-1/2 text-texto-tenue !text-xl pointer-events-none">mail</mat-icon>
+              </div>
+            </div>
 
-            <mat-form-field appearance="outline">
-              <mat-label>Contraseña</mat-label>
-              <input matInput [type]="verClave() ? 'text' : 'password'" formControlName="password"
-                     autocomplete="current-password" />
-              <button mat-icon-button matSuffix type="button" (click)="verClave.set(!verClave())"
-                      [attr.aria-label]="verClave() ? 'Ocultar' : 'Mostrar'">
-                <mat-icon>{{ verClave() ? 'visibility_off' : 'visibility' }}</mat-icon>
-              </button>
-            </mat-form-field>
+            <div>
+              <label class="lt-label">Contraseña</label>
+              <div class="relative">
+                <input class="lt-input !pr-10" [type]="verClave() ? 'text' : 'password'" formControlName="password"
+                       autocomplete="current-password" />
+                <button type="button" (click)="verClave.set(!verClave())"
+                        class="absolute right-2.5 top-1/2 -translate-y-1/2 text-texto-tenue hover:text-texto flex"
+                        [attr.aria-label]="verClave() ? 'Ocultar' : 'Mostrar'">
+                  <mat-icon class="!text-xl">{{ verClave() ? 'visibility_off' : 'visibility' }}</mat-icon>
+                </button>
+              </div>
+            </div>
 
             @if (error()) {
               <div class="rounded-lg bg-marca-soft text-marca px-4 py-3 text-sm flex items-center gap-2">
@@ -79,7 +80,7 @@ import { Marca } from '../../shared/marca';
               </div>
             }
 
-            <button mat-flat-button color="primary" type="submit" class="!h-12 !mt-2"
+            <button mat-flat-button color="primary" type="submit" class="!h-12 !mt-1"
                     [disabled]="cargando()">
               @if (cargando()) {
                 <mat-spinner diameter="22"></mat-spinner>
