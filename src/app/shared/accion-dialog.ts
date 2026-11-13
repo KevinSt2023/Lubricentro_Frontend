@@ -11,6 +11,12 @@ export interface CampoAccion {
   label: string;
   tipo: 'texto' | 'numero' | 'area' | 'select' | 'buscar' | 'fecha' | 'combo';
   opciones?: { valor: string | number; texto: string }[];
+  /**
+   * Opciones dependientes de otros campos (cascada). Si está, manda sobre
+   * `opciones`: se recalcula en vivo según los valores actuales del formulario
+   * (p. ej. Modelo según la Marca, o Categoría según el Tipo).
+   */
+  opcionesDe?: (valores: Record<string, string | number>) => { valor: string | number; texto: string }[];
   valor?: string | number;
   requerido?: boolean;
   hint?: string;
@@ -77,7 +83,7 @@ export interface AccionData {
               @switch (c.tipo) {
                 @case ('select') {
                   <select class="lt-input" [(ngModel)]="valores[c.clave]" [name]="c.clave">
-                    @for (o of c.opciones; track o.valor) {
+                    @for (o of ops(c); track o.valor) {
                       <option [ngValue]="o.valor">{{ o.texto }}</option>
                     }
                   </select>
@@ -86,7 +92,7 @@ export interface AccionData {
                   <input class="lt-input" [(ngModel)]="valores[c.clave]" [name]="c.clave"
                          [attr.list]="'dl-' + c.clave" [placeholder]="c.placeholder ?? ''" autocomplete="off" />
                   <datalist [id]="'dl-' + c.clave">
-                    @for (o of c.opciones; track o.valor) { <option [value]="o.texto"></option> }
+                    @for (o of ops(c); track o.valor) { <option [value]="o.texto"></option> }
                   </datalist>
                 }
                 @case ('area') {
@@ -155,6 +161,11 @@ export class AccionDialog {
 
   etiqueta(c: CampoAccion): string {
     return c.requerido ? `${c.label} *` : c.label;
+  }
+
+  /** Opciones a mostrar: dinámicas (cascada) si el campo las define, si no las estáticas. */
+  ops(c: CampoAccion): { valor: string | number; texto: string }[] {
+    return c.opcionesDe ? c.opcionesDe(this.valores) : (c.opciones ?? []);
   }
 
   ancho(c: CampoAccion): string {

@@ -40,8 +40,8 @@ import { SesionService } from '../../core/sesion.service';
             </div>
             <div class="flex flex-col gap-2 min-h-[4rem] rounded-xl p-1 bg-superficie-2/40">
               @for (o of col.ordenes; track o.id) {
-                <button (click)="abrir(o)"
-                        class="text-left rounded-xl border border-borde bg-superficie p-3 hover:border-marca/50 hover:shadow-sm transition-all">
+                <div (click)="abrir(o)" tabindex="0" (keyup.enter)="abrir(o)"
+                     class="cursor-pointer rounded-xl border border-borde bg-superficie p-3 hover:border-marca/50 hover:shadow-sm transition-all">
                   <div class="flex items-center justify-between">
                     <span class="font-mono text-xs px-1.5 py-0.5 rounded bg-superficie-2 border border-borde">#{{ o.numero }}</span>
                     <span class="font-mono font-semibold text-sm">{{ o.placa }}</span>
@@ -54,7 +54,13 @@ import { SesionService } from '../../core/sesion.service';
                     </span>
                     <span class="text-xs font-semibold">S/ {{ o.total | number: '1.0-0' }}</span>
                   </div>
-                </button>
+                  @if (esTecnicoPool && !o.tecnicoId) {
+                    <button mat-stroked-button class="!w-full !mt-2.5 !h-8 !text-xs !min-h-0 !leading-none"
+                            (click)="$event.stopPropagation(); tomar(o)">
+                      <mat-icon class="!text-base !w-4 !h-4 !mr-1">pan_tool_alt</mat-icon> Tomar
+                    </button>
+                  }
+                </div>
               } @empty {
                 <div class="text-center text-texto-tenue text-xs py-4">—</div>
               }
@@ -92,6 +98,9 @@ export class Ordenes {
   private readonly estados = signal<EstadoOrden[]>([]);
   private readonly ordenes = signal<OrdenItem[]>([]);
 
+  /** Técnico de cola: ve lo suyo + lo sin asignar de su sede, y puede tomarlo. */
+  readonly esTecnicoPool = this.sesion.puede('ORDENES.VER_ASIGNADAS') && !this.sesion.puede('ORDENES.VER');
+
   readonly columnas = computed(() => {
     const flujo = this.estados().filter((e) => !e.esFinal && !e.esAnulacion).sort((a, b) => a.secuencia - b.secuencia);
     return flujo.map((estado) => ({ estado, ordenes: this.ordenes().filter((o) => o.estadoId === estado.id) }));
@@ -114,6 +123,16 @@ export class Ordenes {
 
   abrir(o: OrdenItem) {
     this.router.navigate(['/ordenes', o.id]);
+  }
+
+  tomar(o: OrdenItem) {
+    this.api.tomar(o.id).subscribe({
+      next: () => this.router.navigate(['/ordenes', o.id]),
+      error: (e) => {
+        this.snack.open((e as { error?: ErrorApi })?.error?.mensaje ?? 'No se pudo tomar la orden.', 'Cerrar', { duration: 5000 });
+        this.cargar();
+      },
+    });
   }
 
   nueva() {

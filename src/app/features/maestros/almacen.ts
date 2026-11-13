@@ -9,7 +9,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MaestrosService } from './maestros.service';
-import { Producto, TIPOS_PRODUCTO, UNIDADES } from './maestros.models';
+import { Producto, TIPOS_PRODUCTO, UNIDADES, categoriasProductoDe } from './maestros.models';
 import { Pagina, ErrorApi } from '../../core/modelos';
 import { AccionDialog, CampoAccion } from '../../shared/accion-dialog';
 import { AlmacenDetalleDialog } from './almacen-detalle-dialog';
@@ -143,8 +143,9 @@ export class Almacen {
       { clave: 'codigo', label: 'Código', tipo: 'texto', requerido: true, valor: p?.codigo ?? '', grupo: 'Identificación', placeholder: 'ACE-15W40' },
       { clave: 'codigoBarras', label: 'Código de barras', tipo: 'texto', valor: p?.codigoBarras ?? '' },
       { clave: 'nombre', label: 'Nombre del producto', tipo: 'texto', requerido: true, valor: p?.nombre ?? '', col: 'full' },
-      { clave: 'categoria', label: 'Categoría', tipo: 'texto', valor: p?.categoria ?? '', col: 'full' },
       { clave: 'tipo', label: 'Tipo', tipo: 'select', valor: p?.tipo ?? 'REPUESTO', grupo: 'Clasificación', opciones: TIPOS_PRODUCTO.map((t) => ({ valor: t, texto: t })) },
+      { clave: 'categoria', label: 'Categoría', tipo: 'combo', valor: p?.categoria ?? '', placeholder: 'Según el tipo',
+        opcionesDe: (val) => categoriasProductoDe(val['tipo']).map((c) => ({ valor: c, texto: c })) },
       { clave: 'unidad', label: 'Unidad', tipo: 'select', valor: p?.unidad ?? 'UND', opciones: UNIDADES.map((u) => ({ valor: u, texto: u })) },
       { clave: 'precioVenta', label: 'Precio de venta', tipo: 'numero', requerido: true, valor: p?.precioVenta ?? 0, grupo: 'Precio y stock', prefijo: 'S/', min: 0, step: 0.5 },
       { clave: 'stockMinimo', label: 'Stock mínimo', tipo: 'numero', valor: p?.stockMinimo ?? 0, min: 0, hint: 'Alerta bajo este nivel' },

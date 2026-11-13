@@ -50,6 +50,11 @@ export class OrdenesService {
     return this.http.put<OrdenDetalle>(`${this.base}/${id}/tecnico`, { tecnicoId });
   }
 
+  /** El técnico toma una orden sin asignar de su sede (se auto-asigna). */
+  tomar(id: number): Observable<OrdenDetalle> {
+    return this.http.post<OrdenDetalle>(`${this.base}/${id}/tomar`, {});
+  }
+
   anular(id: number, motivo: string): Observable<OrdenDetalle> {
     return this.http.post<OrdenDetalle>(`${this.base}/${id}/anular`, { motivo });
   }

@@ -2,15 +2,13 @@ import { Component, inject, signal } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MaestrosService } from './maestros.service';
-import { Servicio } from './maestros.models';
+import { Servicio, CATEGORIAS_SERVICIO } from './maestros.models';
 import { Pagina, ErrorApi } from '../../core/modelos';
 import { AccionDialog, CampoAccion } from '../../shared/accion-dialog';
 import { SesionService } from '../../core/sesion.service';
@@ -118,7 +116,8 @@ export class Servicios {
   form(s?: Servicio) {
     const campos: CampoAccion[] = [
       { clave: 'codigo', label: 'Código', tipo: 'texto', requerido: true, valor: s?.codigo ?? '', placeholder: 'SRV-001' },
-      { clave: 'categoria', label: 'Categoría', tipo: 'texto', valor: s?.categoria ?? '', placeholder: 'Lubricación, frenos…' },
+      { clave: 'categoria', label: 'Categoría', tipo: 'combo', valor: s?.categoria ?? '', placeholder: 'Lubricación, frenos…',
+        opciones: CATEGORIAS_SERVICIO.map((c) => ({ valor: c, texto: c })) },
       { clave: 'nombre', label: 'Nombre del servicio', tipo: 'texto', requerido: true, valor: s?.nombre ?? '', col: 'full' },
       { clave: 'precio', label: 'Precio', tipo: 'numero', requerido: true, valor: s?.precio ?? 0, prefijo: 'S/', min: 0, step: 0.5 },
       { clave: 'duracionMin', label: 'Duración', tipo: 'numero', valor: s?.duracionMin ?? '', min: 0, hint: 'En minutos' },

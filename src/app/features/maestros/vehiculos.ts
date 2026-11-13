@@ -2,15 +2,13 @@ import { Component, inject, signal } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MaestrosService } from './maestros.service';
-import { Vehiculo, TIPOS_VEHICULO, MARCAS_VEHICULO, COLORES_VEHICULO, aniosVehiculo } from './maestros.models';
+import { Vehiculo, TIPOS_VEHICULO, MARCAS_VEHICULO, COLORES_VEHICULO, aniosVehiculo, modelosDe } from './maestros.models';
 import { Pagina, ErrorApi } from '../../core/modelos';
 import { AccionDialog, CampoAccion } from '../../shared/accion-dialog';
 import { OpcionBuscar } from '../../shared/buscador';
@@ -131,7 +129,8 @@ export class Vehiculos {
       { clave: 'placa', label: 'Placa', tipo: 'texto', requerido: true, valor: v?.placa ?? '', grupo: 'Vehículo', placeholder: 'ABC-123' },
       { clave: 'tipo', label: 'Tipo', tipo: 'select', valor: v?.tipo ?? 'AUTO', opciones: TIPOS_VEHICULO.map((t) => ({ valor: t, texto: t })) },
       { clave: 'marca', label: 'Marca', tipo: 'combo', requerido: true, valor: v?.marca ?? '', opciones: MARCAS_VEHICULO.map((m) => ({ valor: m, texto: m })), placeholder: 'Toyota, Kia…' },
-      { clave: 'modelo', label: 'Modelo', tipo: 'texto', requerido: true, valor: v?.modelo ?? '', placeholder: 'Hilux, Rio…' },
+      { clave: 'modelo', label: 'Modelo', tipo: 'combo', requerido: true, valor: v?.modelo ?? '', placeholder: 'Elige la marca primero',
+        opcionesDe: (val) => modelosDe(val['marca']).map((m) => ({ valor: m, texto: m })) },
       { clave: 'anio', label: 'Año', tipo: 'select', valor: v?.anio ?? '', opciones: aniosVehiculo().map((a) => ({ valor: a, texto: String(a) })) },
       { clave: 'color', label: 'Color', tipo: 'combo', valor: v?.color ?? '', opciones: COLORES_VEHICULO.map((c) => ({ valor: c, texto: c })) },
       { clave: 'kilometraje', label: 'Kilometraje', tipo: 'numero', valor: v?.kilometraje ?? 0, min: 0, hint: 'En kilómetros', grupo: 'Estado' },
